@@ -1,0 +1,40 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+        # Install python with yum
+        - yum install python3.11 -y
+        - yum install python3-virtualenv -y
+  pre_build:
+    commands:
+      # Create virtual environment
+      - python3 -m virtualenv venv
+      
+      # Activate virtualenv
+      - . venv/bin/activate
+      - pip install --upgrade pip
+      
+      # Install packages in requirements file
+      - pip install -r requirements.txt
+      
+      # Run tests
+      - python3 -m pytest
+  build:
+    commands:
+      - echo Build started on `date`
+      
+      # run basic build
+      - python3 setup.py sdist bdist_wheel
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+
+artifacts:
+  files:
+    - "**/*"
+  # base-directory: ${OUTPUT_DIR}
+  name: test
